@@ -8,7 +8,7 @@ using UnityEngine;
 [RequireComponent(typeof(IObjectTweener))]
 public abstract class Piece : MonoBehaviour
 {
-	[SerializeField] private MaterialSetter materialSetter;
+	private MaterialSetter materialSetter;
 	public Board board { protected get; set; }
 	public Vector2Int occupiedSquare { get; set; }
 	public TeamColor team { get; set; }
