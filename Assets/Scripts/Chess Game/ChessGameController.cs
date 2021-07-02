@@ -10,11 +10,14 @@ public class ChessGameController : MonoBehaviour
     [SerializeField] private Board board;
 
     private PiecesCreator pieceCreator;
-
+    private ChessPlayer whitePlayer;
+    private ChessPlayer blackPlayer;
+    private ChessPlayer activePlayer;
 
     private void Awake()
     {
         SetDependencies();
+        CreatePlayer();
     }
 
     private void SetDependencies()
@@ -22,6 +25,11 @@ public class ChessGameController : MonoBehaviour
         pieceCreator = GetComponent<PiecesCreator>();
     }
 
+    private void CreatePlayer()
+    {
+        whitePlayer = new ChessPlayer(TeamColor.White, board);
+        blackPlayer = new ChessPlayer(TeamColor.Black, board);
+    }
   
     private void Start()
     {
@@ -30,7 +38,10 @@ public class ChessGameController : MonoBehaviour
 
     private void StartNewGame()
     {
+        board.SetDependencies(this);
         CreatePiecesFromLayout(startingBoardLayout);
+        activePlayer = whitePlayer;
+        GenerateAllPossiblePlayerMoves(activePlayer);
     }
 
 
@@ -47,6 +58,11 @@ public class ChessGameController : MonoBehaviour
         }
     }
 
+    public bool IsTeamTurnActive(TeamColor team)
+    {
+        return activePlayer.team == team;
+    }
+
     private void CreatePieceAndInitialize(Vector2Int squareCoords, TeamColor team, Type type)
     {
         Piece newPiece = pieceCreator.CreatePiece(type).GetComponent<Piece>();
@@ -54,6 +70,28 @@ public class ChessGameController : MonoBehaviour
 
         Material teamMaterial = pieceCreator.GetTeamMaterial(team);
         newPiece.SetMaterial(teamMaterial);
+    }
+
+    private void GenerateAllPossiblePlayerMoves(ChessPlayer player)
+    {
+        player.GenerateAllPossibleMoves();
+    }
+
+    public void EndTurn()
+    {
+        GenerateAllPossiblePlayerMoves(activePlayer);
+        GenerateAllPossiblePlayerMoves(GetOpponentToPlayer(activePlayer));
+        ChangeActiveTeam();
+    }
+
+    private ChessPlayer GetOpponentToPlayer(ChessPlayer player)
+    {
+        return player == whitePlayer ? blackPlayer : whitePlayer;
+    }
+
+    private void ChangeActiveTeam()
+    {
+        activePlayer = GetOpponentToPlayer(activePlayer);
     }
 }
 

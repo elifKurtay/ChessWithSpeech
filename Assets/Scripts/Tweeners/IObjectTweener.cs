@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-internal interface IObjectTweener
+public interface IObjectTweener
 {
 	void MoveTo(Transform transform, Vector3 targetPosition);
 }
