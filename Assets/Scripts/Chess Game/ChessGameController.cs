@@ -70,6 +70,11 @@ public class ChessGameController : MonoBehaviour
 
         Material teamMaterial = pieceCreator.GetTeamMaterial(team);
         newPiece.SetMaterial(teamMaterial);
+
+        board.SetPieceOnBoard(squareCoords, newPiece);
+
+        ChessPlayer currentPlayer = team == TeamColor.White ? whitePlayer : blackPlayer;
+        currentPlayer.AddPiece(newPiece);
     }
 
     private void GenerateAllPossiblePlayerMoves(ChessPlayer player)
@@ -91,7 +96,7 @@ public class ChessGameController : MonoBehaviour
 
     private void ChangeActiveTeam()
     {
-        activePlayer = GetOpponentToPlayer(activePlayer);
+        activePlayer = activePlayer == whitePlayer ? blackPlayer : whitePlayer;
     }
 }
 

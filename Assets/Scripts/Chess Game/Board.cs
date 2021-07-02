@@ -91,14 +91,14 @@ public class Board : MonoBehaviour
         return false;
     }
 
-    private Piece GetPieceOnSquare(Vector2Int coords)
+    public Piece GetPieceOnSquare(Vector2Int coords)
     {
         if (CheckIfCoordinatedAreOnBoard(coords))
             return grid[coords.x, coords.y];
         return null;
     }
 
-    private bool CheckIfCoordinatedAreOnBoard(Vector2Int coords)
+    public bool CheckIfCoordinatedAreOnBoard(Vector2Int coords)
     {
         if (coords.x < 0 || coords.y < 0 || coords.x >= BOARD_SIZE || coords.y >= BOARD_SIZE)
             return false;
@@ -110,5 +110,11 @@ public class Board : MonoBehaviour
         int x = Mathf.FloorToInt(inputPosition.x / squareSize) + BOARD_SIZE / 2;
         int y = Mathf.FloorToInt(inputPosition.z / squareSize) + BOARD_SIZE / 2;
         return new Vector2Int(x, y);
+    }
+
+    public void SetPieceOnBoard(Vector2Int coords, Piece piece)
+    {
+        if (CheckIfCoordinatedAreOnBoard(coords))
+            grid[coords.x, coords.y] = piece;
     }
 }
