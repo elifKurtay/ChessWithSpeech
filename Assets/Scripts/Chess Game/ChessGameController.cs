@@ -87,6 +87,7 @@ public class ChessGameController : MonoBehaviour
         GenerateAllPossiblePlayerMoves(activePlayer);
         GenerateAllPossiblePlayerMoves(GetOpponentToPlayer(activePlayer));
         ChangeActiveTeam();
+        Debug.Log("Player turn ended.");
     }
 
     private ChessPlayer GetOpponentToPlayer(ChessPlayer player)

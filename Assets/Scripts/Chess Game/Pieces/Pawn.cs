@@ -30,7 +30,7 @@ public class Pawn : Piece
 
         //diagonal
         Vector2Int[] takeDirections = new Vector2Int[] { new Vector2Int(1, direction.y), new Vector2Int(-1, direction.y) };
-        for (int i = 1; i <= takeDirections.Length; i++)
+        for (int i = 0; i < takeDirections.Length; i++)
         {
             nextCoords = occupiedSquare + takeDirections[i];
             currentPiece = board.GetPieceOnSquare(nextCoords);
