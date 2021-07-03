@@ -14,9 +14,11 @@ public class Board : MonoBehaviour
     private Piece[,] grid;
     private Piece selectedPiece;
     private ChessGameController chessGameController;
+    private SquareSelectorCreator squareSelector;
 
     private void Awake()
     {
+        squareSelector = GetComponent<SquareSelectorCreator>();
         grid = new Piece[BOARD_SIZE, BOARD_SIZE];
     }
 
@@ -53,11 +55,26 @@ public class Board : MonoBehaviour
     private void SelectPiece(Piece piece)
     {
         selectedPiece = piece;
+        List<Vector2Int> selection = selectedPiece.avaliableMoves;
+        ShowSelectionSquares(selection);
+    }
+
+    private void ShowSelectionSquares(List<Vector2Int> selection)
+    {
+        Dictionary<Vector3, bool> squaresData = new Dictionary<Vector3, bool>();
+        for(int i = 0; i < selection.Count; i++)
+        {
+            Vector3 position = CalculatePositionFromCoords(selection[i]);
+            bool isSquareFree = GetPieceOnSquare(selection[i]) == null;
+            squaresData.Add(position, isSquareFree);
+        }
+        squareSelector.ShowSelection(squaresData);
     }
 
     private void DeselectPiece()
     {
         selectedPiece = null;
+        squareSelector.ClearSelection();
     }
 
     private void OnSelectedPieceMoved( Vector2Int coords, Piece piece)
