@@ -10,6 +10,7 @@ public class ChessGameController : MonoBehaviour
 
     [SerializeField] private BoardLayout startingBoardLayout;
     [SerializeField] private Board board;
+    [SerializeField] private ChessUIManager UIManager;
 
     private PiecesCreator pieceCreator;
     private ChessPlayer whitePlayer;
@@ -41,6 +42,7 @@ public class ChessGameController : MonoBehaviour
 
     private void StartNewGame()
     {
+        UIManager.HideUI();
         SetGameState(GameState.Init);
         board.SetDependencies(this);
         CreatePiecesFromLayout(startingBoardLayout);
@@ -77,7 +79,7 @@ public class ChessGameController : MonoBehaviour
         return activePlayer.team == team;
     }
 
-    private void CreatePieceAndInitialize(Vector2Int squareCoords, TeamColor team, Type type)
+    public void CreatePieceAndInitialize(Vector2Int squareCoords, TeamColor team, Type type)
     {
         Piece newPiece = pieceCreator.CreatePiece(type).GetComponent<Piece>();
         newPiece.SetData(squareCoords, team, board);
@@ -131,6 +133,7 @@ public class ChessGameController : MonoBehaviour
     {
         Debug.Log("Game Ended.");
         SetGameState(GameState.Finished);
+        UIManager.OnGameFinished(activePlayer.team.ToString());
     }
 
     private ChessPlayer GetOpponentToPlayer(ChessPlayer player)
@@ -154,5 +157,21 @@ public class ChessGameController : MonoBehaviour
         pieceOwner.RemovePiece(piece);
         Destroy(piece.gameObject);
     }
+
+    public void RestartGame()
+    {
+        DestroyPieces();
+        board.OnGameRestarted();
+        whitePlayer.OnGameRestarted();
+        blackPlayer.OnGameRestarted();
+        StartNewGame();
+    }
+
+    private void DestroyPieces()
+    {
+        whitePlayer.activePieces.ForEach(p => Destroy(p.gameObject));
+        blackPlayer.activePieces.ForEach(p => Destroy(p.gameObject));
+    }
+
 }
 

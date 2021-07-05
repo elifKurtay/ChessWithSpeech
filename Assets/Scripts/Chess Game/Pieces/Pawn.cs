@@ -19,7 +19,7 @@ public class Pawn : Piece
         {
             nextCoords = occupiedSquare + direction * i;
             currentPiece = board.GetPieceOnSquare(nextCoords);
-            if (!board.CheckIfCoordinatedAreOnBoard(nextCoords))
+            if (!board.CheckIfCoordinatesAreOnBoard(nextCoords))
                 break;
 
             if (currentPiece == null)
@@ -34,7 +34,7 @@ public class Pawn : Piece
         {
             nextCoords = occupiedSquare + takeDirections[i];
             currentPiece = board.GetPieceOnSquare(nextCoords);
-            if (!board.CheckIfCoordinatedAreOnBoard(nextCoords))
+            if (!board.CheckIfCoordinatesAreOnBoard(nextCoords))
                 break;
 
             if (currentPiece != null && !currentPiece.IsFromSameTeam(this))
@@ -42,5 +42,20 @@ public class Pawn : Piece
         }
 
         return avaliableMoves;
+    }
+
+    public override void MovePiece(Vector2Int coords)
+    {
+        base.MovePiece(coords);
+        CheckPromotion();
+    }
+
+    private void CheckPromotion()
+    {
+        int endOfBoardYCoord = team == TeamColor.White ? Board.BOARD_SIZE - 1 : 0;
+        if (occupiedSquare.y == endOfBoardYCoord)
+        {
+            board.PromotePiece(this);
+        }
     }
 }

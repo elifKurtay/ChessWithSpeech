@@ -94,4 +94,9 @@ public class ChessPlayer : MonoBehaviour
         }
         return false;
     }
+
+    internal void OnGameRestarted()
+    {
+        activePieces.Clear();
+    }
 }

@@ -25,7 +25,7 @@ public class Knight : Piece
 		for(int i = 0; i < offsets.Length; i++)
         {
 			nextCoords = occupiedSquare + offsets[i];
-			if (!board.CheckIfCoordinatedAreOnBoard(nextCoords))
+			if (!board.CheckIfCoordinatesAreOnBoard(nextCoords))
 				continue;
 			
 			currentPiece = board.GetPieceOnSquare(nextCoords);

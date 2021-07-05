@@ -19,7 +19,7 @@ public class Rook : Piece
             for(int i = 1; i <= range; i++)
             {
                 nextCoords = occupiedSquare + direction * i;
-                if (!board.CheckIfCoordinatedAreOnBoard(nextCoords))
+                if (!board.CheckIfCoordinatesAreOnBoard(nextCoords))
                     break;
 
                 currentPiece = board.GetPieceOnSquare(nextCoords);

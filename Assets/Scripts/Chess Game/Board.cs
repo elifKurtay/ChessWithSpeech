@@ -132,12 +132,12 @@ public class Board : MonoBehaviour
 
     public Piece GetPieceOnSquare(Vector2Int coords)
     {
-        if (CheckIfCoordinatedAreOnBoard(coords))
+        if (CheckIfCoordinatesAreOnBoard(coords))
             return grid[coords.x, coords.y];
         return null;
     }
 
-    public bool CheckIfCoordinatedAreOnBoard(Vector2Int coords)
+    public bool CheckIfCoordinatesAreOnBoard(Vector2Int coords)
     {
         if (coords.x < 0 || coords.y < 0 || coords.x >= BOARD_SIZE || coords.y >= BOARD_SIZE)
             return false;
@@ -153,7 +153,19 @@ public class Board : MonoBehaviour
 
     public void SetPieceOnBoard(Vector2Int coords, Piece piece)
     {
-        if (CheckIfCoordinatedAreOnBoard(coords))
+        if (CheckIfCoordinatesAreOnBoard(coords))
             grid[coords.x, coords.y] = piece;
+    }
+
+    public void PromotePiece(Piece piece)
+    {
+        TakePiece(piece);
+        chessGameController.CreatePieceAndInitialize(piece.occupiedSquare, piece.team, typeof(Queen));
+    }
+
+    internal void OnGameRestarted()
+    {
+        selectedPiece = null;
+        grid = new Piece[BOARD_SIZE, BOARD_SIZE];
     }
 }
