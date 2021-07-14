@@ -18,4 +18,10 @@ public class ChessUIManager : MonoBehaviour
 		UIParent.SetActive(true);
 		finishText.text = string.Format("{0} won", winner);
 	}
+
+	internal void OnGameFinishedWithStalemate()
+	{
+		UIParent.SetActive(true);
+		finishText.text = string.Format("Draw by Stalemate");
+	}
 }

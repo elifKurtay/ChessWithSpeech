@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Pawn : Piece
 {
+
     public override List<Vector2Int> SelectAvaliableSquares()
     {
         avaliableMoves.Clear();

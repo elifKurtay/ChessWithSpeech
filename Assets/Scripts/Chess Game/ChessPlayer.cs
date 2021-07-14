@@ -28,13 +28,19 @@ public class ChessPlayer : MonoBehaviour
             activePieces.Remove(piece);
     }
 
-    public void GenerateAllPossibleMoves()
+    public bool GenerateAllPossibleMoves()
     {
+        bool hasMoves = false;
         foreach ( var piece in activePieces)
         {
             if (board.HasPiece(piece))
-                piece.SelectAvaliableSquares();
+            {
+                List<Vector2Int> avaliableSquares = piece.SelectAvaliableSquares();
+                if (avaliableSquares != null)
+                    hasMoves = true;
+            }
         }
+        return hasMoves;
     }
 
     public Piece[] GetPiecesAttackingOppositePieceOfType<T>() where T : Piece

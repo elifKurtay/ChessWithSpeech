@@ -7,6 +7,7 @@ using UnityEngine;
 public class Board : MonoBehaviour
 {
     public const int BOARD_SIZE = 8;
+    public AudioInputHandler audioInputHandler;
 
     [SerializeField] private Transform bottomLeftSquareTransform;
     [SerializeField] private float squareSize;
@@ -159,8 +160,15 @@ public class Board : MonoBehaviour
 
     public void PromotePiece(Piece piece)
     {
-        TakePiece(piece);
-        chessGameController.CreatePieceAndInitialize(piece.occupiedSquare, piece.team, typeof(Queen));
+        while (true)
+        {
+            if (audioInputHandler.promote())
+            {
+                TakePiece(piece);
+                chessGameController.CreatePieceAndInitialize(piece.occupiedSquare, piece.team, typeof(Queen));
+                break;
+            }
+        }
     }
 
     internal void OnGameRestarted()

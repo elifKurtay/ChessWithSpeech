@@ -93,16 +93,20 @@ public class ChessGameController : MonoBehaviour
         currentPlayer.AddPiece(newPiece);
     }
 
-    private void GenerateAllPossiblePlayerMoves(ChessPlayer player)
+    private bool GenerateAllPossiblePlayerMoves(ChessPlayer player)
     {
-        player.GenerateAllPossibleMoves();
+        return player.GenerateAllPossibleMoves();
     }
 
     public void EndTurn()
     {
         Debug.Log("Player turn ended."); 
         GenerateAllPossiblePlayerMoves(activePlayer);
-        GenerateAllPossiblePlayerMoves(GetOpponentToPlayer(activePlayer));
+
+        //checking for stalemate
+        if ( !GenerateAllPossiblePlayerMoves(GetOpponentToPlayer(activePlayer)))
+            EndGameWithDraw();
+
         if (CheckIfGameIsFinished())
             EndGame();
         else
@@ -127,6 +131,14 @@ public class ChessGameController : MonoBehaviour
             }
         }
         return false;
+    }
+
+    private void EndGameWithDraw()
+    {
+        Debug.Log("Game Ended With Stalemate.");
+        SetGameState(GameState.Finished);
+        UIManager.OnGameFinishedWithStalemate();
+
     }
 
     private void EndGame()
