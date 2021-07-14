@@ -48,6 +48,8 @@ public class AudioInputHandler : MonoBehaviour
     private void RecognisedSpeech( PhraseRecognizedEventArgs speech)
     {
         Debug.Log(speech.text);
+        if (promotion) 
+            promotion = false;
         actions[speech.text].Invoke();
     }
 
@@ -69,9 +71,6 @@ public class AudioInputHandler : MonoBehaviour
 
     public bool promote()
     {
-        var temp = promotion;
-        if (promotion)
-            promotion = false;
-        return temp;
+        return promotion;
     }
 }
