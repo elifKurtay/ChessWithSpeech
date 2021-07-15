@@ -82,7 +82,7 @@ public class Board : MonoBehaviour
         squareSelector.ClearSelection();
     }
 
-    private void OnSelectedPieceMoved( Vector2Int coords, Piece piece)
+    public void OnSelectedPieceMoved( Vector2Int coords, Piece piece)
     {
         TryToTakeOppositePiece(coords);
         UpdateBoardOnPieceMove(coords, piece.occupiedSquare, piece, null);

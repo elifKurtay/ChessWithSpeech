@@ -157,6 +157,8 @@ public class AudioInputHandler : MonoBehaviour
         Debug.Log(speech.text);
         if (promotion) 
             promotion = false;
+        if (castling)
+            castling = false;
         actions[speech.text].Invoke();
     }
 
@@ -169,6 +171,7 @@ public class AudioInputHandler : MonoBehaviour
     private void Castling()
     {
         Debug.Log("Castling");
+        castling = true;
     }
 
     private void Promotion()

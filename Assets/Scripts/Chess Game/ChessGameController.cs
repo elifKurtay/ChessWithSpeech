@@ -189,8 +189,8 @@ public class ChessGameController : MonoBehaviour
     {
         Piece[] avaliablePieces = null;
         Vector2Int coords = new Vector2Int();
-        coords.x = (goal[0] - 'a') * Board.BOARD_SIZE;
-        coords.y = goal[1] - '0';
+        coords.x = (goal[0] - 'a')  ;
+        coords.y = goal[1] - '0' - 1;
         Debug.LogFormat("The piece should be moved to coords ({0}, {1})", coords.x, coords.y);
 
         switch (pieceType)
@@ -222,8 +222,13 @@ public class ChessGameController : MonoBehaviour
        
         foreach( var piece in avaliablePieces)
         {
-            if(piece.CanMoveTo(coords))
+            if (piece.CanMoveTo(coords))
+            {
+                Debug.Log("found the piece to move");
                 board.SelectPiece(piece);
+                board.OnSelectedPieceMoved(coords, piece);
+
+            }
         }
         
     }
