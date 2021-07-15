@@ -13,10 +13,13 @@ public class AudioInputHandler : MonoBehaviour
     public bool castling = false;
     public bool promotion = false;
 
-    private KeywordRecognizer keywordRecognizer;
-    private Dictionary<string, Action> actions = new Dictionary<string, Action>();
+    public ChessGameController chessGameController;
 
     private DictationRecognizer dictationRecognizer;
+    private KeywordRecognizer keywordRecognizer;
+    private Dictionary<string, Action> actions = new Dictionary<string, Action>();
+    private List<string> pieces = new List<string>() { "king", "queen", "bishop", "knight", "rook", "pawn" };
+    private List<string> letters = new List<string>() { "a", "b", "c", "d", "e", "f", "g", "h" };
 
     
     // Start is called before the first frame update
@@ -99,7 +102,33 @@ public class AudioInputHandler : MonoBehaviour
         dictationRecognizer.DictationResult += (text, confidence) =>
         {
             Debug.LogFormat("Dictation result: {0}", text);
-            StartKeywordRecogniser();
+            if(text.Contains(" to ") && text.Split(' ').Length > 2)
+            {
+
+                string[] words = text.ToLower().Split(' ');
+                int pieceIndex = 0;
+                if (words[0] == "move")
+                    pieceIndex = 1;
+                //a 3 instead of a3
+                if (words.Length == pieceIndex + 4 && words[words.Length - 1].All(char.IsDigit)
+                    && words[words.Length - 2].Length == 1 && letters.Contains(words[words.Length - 2]) )
+                {
+                    string coords = words[2 + pieceIndex] + words[3 + pieceIndex];
+                    Debug.LogFormat("Piece {0} will be moved to {1}", words[pieceIndex], coords);
+                    chessGameController.FindAndMovePiece(words[pieceIndex], coords);
+                    StartKeywordRecogniser();
+                }
+                else if (pieces.Contains(words[pieceIndex]) && words[pieceIndex + 2].Length == 2
+                    && words[pieceIndex + 2][1] < 58 && letters.Contains(words[pieceIndex + 2][0] + "") )
+                {
+                    Debug.LogFormat("Piece {0} will be moved to {1}", words[pieceIndex], words[2 + pieceIndex]);
+                    chessGameController.FindAndMovePiece(words[pieceIndex], words[2 + pieceIndex]);
+                    StartKeywordRecogniser();
+                }
+                else
+                    Debug.Log("BAD VOICE COMMAND. TRY AGAIN.");
+            }
+            
         };
 
         dictationRecognizer.DictationHypothesis += (text) =>

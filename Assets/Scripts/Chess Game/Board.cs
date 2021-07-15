@@ -56,7 +56,7 @@ public class Board : MonoBehaviour
         }
     }
 
-    private void SelectPiece(Piece piece)
+    public void SelectPiece(Piece piece)
     {
         chessGameController.RemoveMovesEnablingAttackOnPieceOfType<King>(piece);
         selectedPiece = piece;

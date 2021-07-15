@@ -185,5 +185,47 @@ public class ChessGameController : MonoBehaviour
         blackPlayer.activePieces.ForEach(p => Destroy(p.gameObject));
     }
 
+    public void FindAndMovePiece(string pieceType, string goal)
+    {
+        Piece[] avaliablePieces = null;
+        Vector2Int coords = new Vector2Int();
+        coords.x = (goal[0] - 'a') * Board.BOARD_SIZE;
+        coords.y = goal[1] - '0';
+        Debug.LogFormat("The piece should be moved to coords ({0}, {1})", coords.x, coords.y);
+
+        switch (pieceType)
+        {
+            case "king":
+                avaliablePieces = activePlayer.GetPiecesOfType<King>();
+                break;
+            case "queen":
+                avaliablePieces = activePlayer.GetPiecesOfType<Queen>();
+                break;
+            case "bishop":
+                avaliablePieces = activePlayer.GetPiecesOfType<Bishop>();
+                break;
+            case "knight":
+                avaliablePieces = activePlayer.GetPiecesOfType<Knight>();
+                break;
+            case "rook":
+                avaliablePieces = activePlayer.GetPiecesOfType<Rook>();
+                break;
+            case "pawn":
+                avaliablePieces = activePlayer.GetPiecesOfType<Pawn>();
+                break;
+            default: break;
+        }
+        
+        if (avaliablePieces.Length < 1)
+            return;
+        Debug.Log("found avaliable pieces");
+       
+        foreach( var piece in avaliablePieces)
+        {
+            if(piece.CanMoveTo(coords))
+                board.SelectPiece(piece);
+        }
+        
+    }
 }
 

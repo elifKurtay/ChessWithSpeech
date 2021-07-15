@@ -458,6 +458,7 @@ MonoBehaviour:
   startInput: 0
   castling: 0
   promotion: 0
+  chessGameController: {fileID: 1909074935}
 --- !u!4 &1460443857
 Transform:
   m_ObjectHideFlags: 0
