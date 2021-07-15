@@ -16,17 +16,20 @@ public class AudioInputHandler : MonoBehaviour
     private KeywordRecognizer keywordRecognizer;
     private Dictionary<string, Action> actions = new Dictionary<string, Action>();
 
+    private DictationRecognizer dictationRecognizer;
 
+    
     // Start is called before the first frame update
     void Start()
     {
-        actions.Add("queen", SelectQueen);
+        actions.Add("move", Move);
         actions.Add("castling", Castling);
         actions.Add("promotion", Promotion);
         keywordRecognizer = new KeywordRecognizer(actions.Keys.ToArray());
         keywordRecognizer.OnPhraseRecognized += RecognisedSpeech;
         keywordRecognizer.Start();
         Debug.Log("AudioInputHandler init ");
+
     }
 
     // Update is called once per frame
@@ -42,7 +45,82 @@ public class AudioInputHandler : MonoBehaviour
             keywordRecognizer.Start();
             startInput = false;
         }
+    }
 
+    public void StartRecording()
+    {
+        // Shutdown the PhraseRecognitionSystem. This controls the KeywordRecognizers.
+        if (PhraseRecognitionSystem.Status == SpeechSystemStatus.Running)
+        {
+            PhraseRecognitionSystem.Shutdown();
+            keywordRecognizer.Stop();
+            keywordRecognizer.Dispose();
+            Debug.Log("keywordRecognizer has been disposed.");
+        }
+
+        StartCoroutine(StartRecordingWhenPossible());
+    }
+
+    public void StartKeywordRecogniser()
+    {
+        if (dictationRecognizer.Status == SpeechSystemStatus.Running)
+        {
+            dictationRecognizer.Stop();
+            dictationRecognizer.Dispose();
+            Debug.Log("dictationRecognizer has been disposed.");
+        }
+        StartCoroutine(StartKeywordRecogniserWhenPossible());
+    }
+
+    private IEnumerator StartKeywordRecogniserWhenPossible()
+    {
+        while (dictationRecognizer.Status == SpeechSystemStatus.Running)
+        {
+            yield return null;
+        }
+
+        keywordRecognizer = new KeywordRecognizer(actions.Keys.ToArray());
+        keywordRecognizer.OnPhraseRecognized += RecognisedSpeech;
+        keywordRecognizer.Start();
+        // Start recording from the microphone for 10 seconds.
+        //Microphone.Start(deviceName, false, messageLength, samplingRate);
+        Debug.Log("keywordRecognizer has started.");
+    }
+
+    private IEnumerator StartRecordingWhenPossible()
+    {
+        while (PhraseRecognitionSystem.Status == SpeechSystemStatus.Running)
+        {
+            yield return null;
+        }
+
+        dictationRecognizer = new DictationRecognizer();
+
+        dictationRecognizer.DictationResult += (text, confidence) =>
+        {
+            Debug.LogFormat("Dictation result: {0}", text);
+            StartKeywordRecogniser();
+        };
+
+        dictationRecognizer.DictationHypothesis += (text) =>
+        {
+            Debug.LogFormat("Dictation hypothesis: {0}", text);
+        };
+
+        dictationRecognizer.DictationComplete += (completionCause) =>
+        {
+            if (completionCause != DictationCompletionCause.Complete)
+                Debug.LogErrorFormat("Dictation completed unsuccessfully: {0}.", completionCause);
+        };
+
+        dictationRecognizer.DictationError += (error, hresult) =>
+        {
+            Debug.LogErrorFormat("Dictation error: {0}; HResult = {1}.", error, hresult);
+        };
+        dictationRecognizer.Start();
+        // Start recording from the microphone for 10 seconds.
+        //Microphone.Start(deviceName, false, messageLength, samplingRate);
+        Debug.Log("dictationRecognizer has started.");
     }
 
     private void RecognisedSpeech( PhraseRecognizedEventArgs speech)
@@ -53,9 +131,10 @@ public class AudioInputHandler : MonoBehaviour
         actions[speech.text].Invoke();
     }
 
-    private void SelectQueen()
+    private void Move()
     {
-        Debug.Log("Queen selected.");
+        Debug.Log("Move keyword captured");
+        StartRecording();
     }
 
     private void Castling()
