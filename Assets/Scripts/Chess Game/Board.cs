@@ -84,6 +84,18 @@ public class Board : MonoBehaviour
 
     public void OnSelectedPieceMoved( Vector2Int coords, Piece piece)
     {
+        //check for castling
+        if (piece.GetType() == typeof(King) && ((King) piece).IsMoveCastling(coords)) {
+            if (audioInputHandler.IsCastling())
+                Debug.Log("castling is used");
+            else
+            {
+                Debug.Log("castling cannot be used");
+                return;
+            }
+        }
+
+
         TryToTakeOppositePiece(coords);
         UpdateBoardOnPieceMove(coords, piece.occupiedSquare, piece, null);
         selectedPiece.MovePiece(coords);
@@ -160,15 +172,14 @@ public class Board : MonoBehaviour
 
     public void PromotePiece(Piece piece)
     {
-        while (true)
+        if (audioInputHandler.promote())
         {
-            if (audioInputHandler.promote())
-            {
-                TakePiece(piece);
-                chessGameController.CreatePieceAndInitialize(piece.occupiedSquare, piece.team, typeof(Queen));
-                break;
-            }
+            Debug.Log("Piece will be promoted to Queen.");
+            TakePiece(piece);
+            chessGameController.CreatePieceAndInitialize(piece.occupiedSquare, piece.team, typeof(Queen));
         }
+        else
+            Debug.Log("Piece will not be promoted.");
     }
 
     internal void OnGameRestarted()

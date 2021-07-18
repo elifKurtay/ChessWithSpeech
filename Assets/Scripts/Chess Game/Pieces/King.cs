@@ -23,6 +23,7 @@ public class King : Piece
     private Vector2Int leftCastlingMove;
     private Vector2Int rightCastlingMove;
 
+
     public override List<Vector2Int> SelectAvaliableSquares()
     {
         avaliableMoves.Clear();
@@ -98,7 +99,6 @@ public class King : Piece
     public override void MovePiece(Vector2Int coords)
     {
         base.MovePiece(coords);
-        WaitForCastlingCommand();
         if (coords == leftCastlingMove)
         {
             board.UpdateBoardOnPieceMove(coords + Vector2Int.right, leftRook.occupiedSquare, leftRook, null);
@@ -109,6 +109,11 @@ public class King : Piece
             board.UpdateBoardOnPieceMove(coords + Vector2Int.left, rightRook.occupiedSquare, rightRook, null);
             rightRook.MovePiece(coords + Vector2Int.left);
         }
+    }
+
+    public bool IsMoveCastling(Vector2Int coords)
+    {
+        return (coords == leftCastlingMove) || (coords == rightCastlingMove);
     }
 
 

@@ -113,6 +113,11 @@ public class AudioInputHandler : MonoBehaviour
                 if (words.Length == pieceIndex + 4 && words[words.Length - 1].All(char.IsDigit)
                     && words[words.Length - 2].Length == 1 && letters.Contains(words[words.Length - 2]) )
                 {
+                    if (words[pieceIndex] == "night")
+                        words[pieceIndex] = "knight";
+                    else if (words[pieceIndex] == "porn" || words[pieceIndex] == "****")
+                        words[pieceIndex] = "pawn";
+
                     string coords = words[2 + pieceIndex] + words[3 + pieceIndex];
                     Debug.LogFormat("Piece {0} will be moved to {1}", words[pieceIndex], coords);
                     chessGameController.FindAndMovePiece(words[pieceIndex], coords);
@@ -121,6 +126,11 @@ public class AudioInputHandler : MonoBehaviour
                 else if (pieces.Contains(words[pieceIndex]) && words[pieceIndex + 2].Length == 2
                     && words[pieceIndex + 2][1] < 58 && letters.Contains(words[pieceIndex + 2][0] + "") )
                 {
+                    if (words[pieceIndex] == "night")
+                        words[pieceIndex] = "knight";
+                    else if (words[pieceIndex] == "porn" || words[pieceIndex] == "****")
+                        words[pieceIndex] = "pawn";
+
                     Debug.LogFormat("Piece {0} will be moved to {1}", words[pieceIndex], words[2 + pieceIndex]);
                     chessGameController.FindAndMovePiece(words[pieceIndex], words[2 + pieceIndex]);
                     StartKeywordRecogniser();
@@ -183,5 +193,11 @@ public class AudioInputHandler : MonoBehaviour
     public bool promote()
     {
         return promotion;
+    }
+
+    public bool IsCastling()
+    {
+        Debug.Log("IsCastling is called.");
+        return castling;
     }
 }
